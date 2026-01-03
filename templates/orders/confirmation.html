@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed #{{ order.id }} - E-Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Success Message -->
+            <div class="text-center mb-5">
+                <div class="success-icon mb-4">
+                    <div class="rounded-circle bg-success d-inline-flex align-items-center justify-content-center" 
+                         style="width: 100px; height: 100px;">
+                        <i class="fas fa-check fa-3x text-white"></i>
+                    </div>
+                </div>
+                <h1 class="display-5 fw-bold text-success mb-3">Order Confirmed!</h1>
+                <p class="lead">Thank you for your purchase. Your order has been received and is being processed.</p>
+            </div>
+            
+            <!-- Order Details Card -->
+            <div class="card border-0 shadow-lg mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">Order #{{ order.id }}</h3>
+                        <span class="badge bg-light text-dark fs-6">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <h5 class="mb-3"><i class="fas fa-receipt me-2"></i>Order Summary</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>Order Date:</td>
+                                            <td class="text-end">{{ order.created|date:"F d, Y H:i" }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Order Status:</td>
+                                            <td class="text-end">
+                                                <span class="badge bg-info">{{ order.get_status_display }}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Payment Method:</td>
+                                            <td class="text-end">{{ order.get_payment_method_display }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Payment Status:</td>
+                                            <td class="text-end">
+                                                <span class="badge bg-{% if order.paid %}success{% else %}warning{% endif %}">
+                                                    {{ order.get_payment_status_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% if order.transaction_id %}
+                                        <tr>
+                                            <td>Transaction ID:</td>
+                                            <td class="text-end"><small>{{ order.transaction_id }}</small></td>
+                                        </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-4">
+                            <h5 class="mb-3"><i class="fas fa-dollar-sign me-2"></i>Payment Summary</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>Subtotal:</td>
+                                            <td class="text-end">${{ order.get_subtotal }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Shipping:</td>
+                                            <td class="text-end">${{ order.shipping_cost }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total Paid:</strong></td>
+                                            <td class="text-end"><strong>${{ order.get_total_cost }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <h5 class="mb-3"><i class="fas fa-box me-2"></i>Order Items</h5>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                                     class="me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0">{{ item.product.name }}</h6>
+                                                <small class="text-muted">{{ item.product.category.name }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">${{ item.price }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">${{ item.get_cost }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Shipping Information -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-truck me-2"></i>Shipping Information</h5>
+                            <div class="card border">
+                                <div class="card-body">
+                                    <p class="mb-1"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
+                                    <p class="mb-1">{{ order.address }}</p>
+                                    <p class="mb-1">{{ order.city }}, {{ order.state }} {{ order.postal_code }}</p>
+                                    <p class="mb-1">{{ order.country }}</p>
+                                    <p class="mb-0"><i class="fas fa-phone me-2"></i>{{ order.phone|default:"Not provided" }}</p>
+                                    <p class="mb-0"><i class="fas fa-envelope me-2"></i>{{ order.email }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5 class="mb-3"><i class="fas fa-info-circle me-2"></i>What's Next?</h5>
+                            <div class="card border">
+                                <div class="card-body">
+                                    <div class="timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker bg-success"></div>
+                                            <div class="timeline-content">
+                                                <h6 class="mb-0">Order Confirmed</h6>
+                                                <small class="text-muted">Your order has been received</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker {% if order.status != 'pending' %}bg-success{% else %}bg-light{% endif %}"></div>
+                                            <div class="timeline-content">
+                                                <h6 class="mb-0">Processing</h6>
+                                                <small class="text-muted">We're preparing your order</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker {% if order.status == 'shipped' or order.status == 'delivered' %}bg-success{% else %}bg-light{% endif %}"></div>
+                                            <div class="timeline-content">
+                                                <h6 class="mb-0">Shipped</h6>
+                                                <small class="text-muted">Your order is on the way</small>
+                                            </div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-marker {% if order.status == 'delivered' %}bg-success{% else %}bg-light{% endif %}"></div>
+                                            <div class="timeline-content">
+                                                <h6 class="mb-0">Delivered</h6>
+                                                <small class="text-muted">Your order has arrived</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 d-md-flex justify-content-center mt-4">
+                <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-primary btn-lg px-4 me-3">
+                    <i class="fas fa-eye me-2"></i>View Order Details
+                </a>
+                <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary btn-lg px-4 me-3">
+                    <i class="fas fa-store me-2"></i>Continue Shopping
+                </a>
+                <a href="{% url 'orders:order_history' %}" class="btn btn-outline-dark btn-lg px-4">
+                    <i class="fas fa-history me-2"></i>View All Orders
+                </a>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="row mt-5">
+                <div class="col-md-4 text-center mb-4">
+                    <div class="p-3">
+                        <i class="fas fa-envelope fa-2x text-primary mb-3"></i>
+                        <h5>Email Confirmation</h5>
+                        <p class="text-muted small">A confirmation email has been sent to {{ order.email }}</p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="p-3">
+                        <i class="fas fa-headset fa-2x text-success mb-3"></i>
+                        <h5>Need Help?</h5>
+                        <p class="text-muted small">Contact our support team for any questions</p>
+                        <a href="mailto:support@estore.com" class="btn btn-sm btn-outline-success">Contact Support</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center mb-4">
+                    <div class="p-3">
+                        <i class="fas fa-download fa-2x text-warning mb-3"></i>
+                        <h5>Download Invoice</h5>
+                        <p class="text-muted small">Download your order invoice for records</p>
+                        <button class="btn btn-sm btn-outline-warning" onclick="printOrder()">
+                            <i class="fas fa-print me-1"></i>Print Receipt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function printOrder() {
+        window.open("{% url 'orders:order_detail' order.id %}?print=true", "_blank");
+    }
+</script>
+
+<style>
+    .success-icon {
+        animation: bounce 1s;
+    }
+    
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+        40% {transform: translateY(-30px);}
+        60% {transform: translateY(-15px);}
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 3px solid #dee2e6;
+    }
+    
+    .timeline-content {
+        padding-bottom: 10px;
+    }
+    
+    .timeline-item:not(:last-child) .timeline-content::after {
+        content: '';
+        position: absolute;
+        left: -21px;
+        top: 20px;
+        bottom: -10px;
+        width: 2px;
+        background: #dee2e6;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Payment - Order #{{ order.id }} - E-Store{% endblock %}
+
+{% block extra_css %}
+<!-- Stripe Elements CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fas fa-credit-card me-2"></i>Complete Payment</h3>
+                        <span class="badge bg-light text-dark fs-6">Order #{{ order.id }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Order Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Order Details</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Date:</strong> {{ order.created|date:"F d, Y" }}</li>
+                                <li><strong>Items:</strong> {{ order.get_items_count }}</li>
+                                <li><strong>Shipping:</strong> {{ order.get_shipping_method_display }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Payment Summary</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <td>Subtotal:</td>
+                                            <td class="text-end">${{ order.get_subtotal }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Shipping:</td>
+                                            <td class="text-end">${{ order.shipping_cost }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td class="text-end"><strong>${{ order.get_total_cost }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stripe Payment Form -->
+                    <div class="payment-section">
+                        <h5 class="mb-3"><i class="fab fa-cc-stripe me-2"></i>Credit Card Payment</h5>
+                        
+                        <form method="post" id="payment-form">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label for="card-element" class="form-label">
+                                    Credit or debit card
+                                </label>
+                                <div id="card-element" class="form-control p-3" style="height: 45px;">
+                                    <!-- Stripe Card Element will be inserted here -->
+                                </div>
+                                <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="name-on-card" class="form-label">Name on Card</label>
+                                <input type="text" id="name-on-card" class="form-control" 
+                                       placeholder="John Doe" required>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Test Card: 4242 4242 4242 4242 | Exp: 12/34 | CVV: 123
+                            </div>
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" id="submit-button" class="btn btn-success btn-lg">
+                                    <i class="fas fa-lock me-2"></i>Pay ${{ order.get_total_cost }}
+                                </button>
+                                <a href="{% url 'orders:order_create' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Checkout
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Alternative Payment Methods -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6 class="mb-3">Other Payment Methods</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'orders:paypal_payment' order.id %}" 
+                                   class="btn btn-outline-warning w-100">
+                                    <i class="fab fa-paypal me-2"></i>Pay with PayPal
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'orders:order_create' %}" 
+                                   class="btn btn-outline-secondary w-100">
+                                    <i class="fas fa-money-bill-wave me-2"></i>Cash on Delivery
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <a href="{% url 'orders:order_create' %}" 
+                                   class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-university me-2"></i>Bank Transfer
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>Secure Payment • SSL Encrypted
+                        </small>
+                        <div>
+                            <i class="fab fa-cc-visa fa-2x text-primary me-2"></i>
+                            <i class="fab fa-cc-mastercard fa-2x text-danger me-2"></i>
+                            <i class="fab fa-cc-amex fa-2x text-info me-2"></i>
+                            <i class="fab fa-cc-discover fa-2x text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    // Stripe setup
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const elements = stripe.elements();
+    
+    // Custom styling for Stripe Elements
+    const style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#aab7c4'
+            }
+        },
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+        }
+    };
+    
+    // Create card element
+    const card = elements.create('card', {style: style});
+    card.mount('#card-element');
+    
+    // Handle real-time validation errors from the card Element
+    card.addEventListener('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+    
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit-button');
+    
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        // Disable submit button to prevent multiple clicks
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        
+        // Create payment method
+        const {paymentMethod, error} = await stripe.createPaymentMethod({
+            type: 'card',
+            card: card,
+            billing_details: {
+                name: document.getElementById('name-on-card').value,
+            },
+        });
+        
+        if (error) {
+            // Show error to customer
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message;
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="fas fa-lock me-2"></i>Pay ${{ order.get_total_cost }}';
+        } else {
+            // Submit the form with payment method ID
+            const hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'payment_method_id');
+            hiddenInput.setAttribute('value', paymentMethod.id);
+            form.appendChild(hiddenInput);
+            
+            // Submit the form
+            form.submit();
+        }
+    });
+</script>
+
+<style>
+    .payment-section {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 2rem;
+    }
+    
+    .StripeElement {
+        box-sizing: border-box;
+        height: 40px;
+        padding: 10px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: white;
+        box-shadow: 0 1px 3px 0 #e6ebf1;
+        transition: box-shadow 150ms ease;
+    }
+    
+    .StripeElement--focus {
+        box-shadow: 0 1px 3px 0 #cfd7df;
+    }
+    
+    .StripeElement--invalid {
+        border-color: #fa755a;
+    }
+    
+    .StripeElement--webkit-autofill {
+        background-color: #fefde5 !important;
+    }
+    
+    #card-errors {
+        color: #fa755a;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}

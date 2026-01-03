@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}PayPal Payment - Order #{{ order.id }} - E-Store{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-warning text-dark py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="fab fa-paypal me-2"></i>Pay with PayPal</h3>
+                        <span class="badge bg-light text-dark fs-6">Order #{{ order.id }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <i class="fab fa-paypal fa-4x text-primary mb-3"></i>
+                        <h4>Complete Your Purchase</h4>
+                        <p class="text-muted">You will be redirected to PayPal to complete your payment.</p>
+                    </div>
+                    
+                    <!-- Order Summary -->
+                    <div class="card border mb-4">
+                        <div class="card-body">
+                            <h6 class="card-title">Order Summary</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm mb-0">
+                                    <tbody>
+                                        <tr>
+                                            <td>Subtotal:</td>
+                                            <td class="text-end">${{ order.get_subtotal }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Shipping:</td>
+                                            <td class="text-end">${{ order.shipping_cost }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Total:</strong></td>
+                                            <td class="text-end"><strong>${{ order.get_total_cost }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PayPal Button (Demo - in real app would use PayPal SDK) -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="fab fa-paypal me-2"></i>Pay ${{ order.get_total_cost }} with PayPal
+                            </button>
+                            
+                            <a href="{% url 'orders:payment' order.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-credit-card me-2"></i>Use Credit Card Instead
+                            </a>
+                            
+                            <a href="{% url 'orders:order_create' %}" class="btn btn-outline-dark">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Checkout
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="alert alert-info small">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Demo Mode:</strong> This is a simulation. In a real application, 
+                            you would integrate with the PayPal API for actual payments.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-light py-3 text-center">
+                    <small class="text-muted">
+                        <i class="fas fa-lock me-1"></i>Secure • Encrypted • Protected by PayPal
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

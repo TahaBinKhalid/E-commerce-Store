@@ -1,0 +1,916 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Welcome to E-Store - Your Online Shopping Destination{% endblock %}
+
+{% block content %}
+<!-- Modern Minimalistic Hero Section -->
+<section class="hero-section mb-5">
+    <div class="container-fluid px-0">
+        <div class="hero-banner position-relative">
+            <!-- Background Image with Overlay -->
+            <div class="hero-background" style="background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;">
+            </div>
+            
+            <!-- Minimalistic Hero Content -->
+            <div class="hero-content position-relative py-6 py-lg-8">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 col-md-10 text-center">
+                            <!-- Minimalistic Badge -->
+                            <div class="d-flex justify-content-center mb-3">
+                                <span class="minimal-badge px-3 py-1">
+                                    <i class="fas fa-bolt me-1"></i> SUMMER SALE
+                                </span>
+                            </div>
+                            
+                            <!-- Main Hero Title -->
+                            <h1 class="display-4 fw-bold mb-3 text-dark">
+                                <span class="d-block">SHOPPING</span>
+                                <span class="text-gradient">EASIER THAN EVER</span>
+                            </h1>
+                            
+                            <!-- Subtitle with Lorem Ipsum -->
+                            <p class="lead text-muted mb-4 mx-auto" style="max-width: 600px;">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy 
+                                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                            </p>
+                            
+                            <!-- CTA Button -->
+                            <div class="cta-wrapper mt-5">
+                                <a href="{% url 'products:product_list' %}" class="btn-minimal-primary btn-lg px-5 py-3">
+                                    <span class="btn-text">Choose your</span>
+                                    <span class="btn-number">2</span>
+                                </a>
+                                <div class="mt-3">
+                                    <a href="{% url 'products:product_list' %}" class="text-decoration-none text-dark small fw-bold">
+                                        Continue shopping <i class="fas fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats in Minimal Style -->
+                            <div class="stats-minimal mt-6 pt-4">
+                                <div class="row g-4 justify-content-center">
+                                    <div class="col-auto">
+                                        <div class="stat-item">
+                                            <h3 class="fw-bold mb-0">10K+</h3>
+                                            <small class="text-muted">Products</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="stat-item">
+                                            <h3 class="fw-bold mb-0">24/7</h3>
+                                            <small class="text-muted">Support</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="stat-item">
+                                            <h3 class="fw-bold mb-0">100%</h3>
+                                            <small class="text-muted">Secure</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Minimal Navigation Categories -->
+<section class="categories-minimal mb-6">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="section-title fw-bold mb-3">SUPPORT LOCAL EVERYTHING</h2>
+                <p class="text-muted">Browse through our curated local collections</p>
+            </div>
+        </div>
+        
+        <!-- Category Navigation -->
+        <div class="category-nav mb-5">
+            <div class="row g-3 justify-content-center">
+                <div class="col-auto">
+                    <a href="{% url 'products:product_list' %}" class="category-nav-link active">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">HOME</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'products:product_list_by_category' 'clothing' %}" class="category-nav-link">
+                        <span class="nav-icon">👕</span>
+                        <span class="nav-text">FASHION</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'products:product_list_by_category' 'electronics' %}" class="category-nav-link">
+                        <span class="nav-icon">📱</span>
+                        <span class="nav-text">PRODUCTS</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'products:product_list' %}" class="category-nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">CATEGORIES</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="#" class="category-nav-link">
+                        <span class="nav-icon">📞</span>
+                        <span class="nav-text">CONTACT</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="#" class="category-nav-link">
+                        <span class="nav-icon">👂</span>
+                        <span class="nav-text">EAR</span>
+                    </a>
+                </div>
+                <div class="col-auto">
+                    <a href="{% url 'products:product_list' %}" class="category-nav-link">
+                        <span class="nav-icon">🛒</span>
+                        <span class="nav-text">ONLINE</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Category Cards in Grid -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="{% url 'products:product_list_by_category' 'electronics' %}" class="text-decoration-none">
+                    <div class="category-card-minimal">
+                        <div class="category-icon bg-primary-soft">
+                            <i class="fas fa-laptop fa-2x"></i>
+                        </div>
+                        <div class="category-content">
+                            <h5 class="fw-bold mb-1">Electronics</h5>
+                            <p class="text-muted small mb-0">Latest gadgets & tech</p>
+                        </div>
+                        <div class="category-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-4">
+                <a href="{% url 'products:product_list_by_category' 'clothing' %}" class="text-decoration-none">
+                    <div class="category-card-minimal">
+                        <div class="category-icon bg-success-soft">
+                            <i class="fas fa-tshirt fa-2x"></i>
+                        </div>
+                        <div class="category-content">
+                            <h5 class="fw-bold mb-1">Fashion</h5>
+                            <p class="text-muted small mb-0">Trendy clothing</p>
+                        </div>
+                        <div class="category-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-md-4">
+                <a href="{% url 'products:product_list_by_category' 'home-garden' %}" class="text-decoration-none">
+                    <div class="category-card-minimal">
+                        <div class="category-icon bg-warning-soft">
+                            <i class="fas fa-home fa-2x"></i>
+                        </div>
+                        <div class="category-content">
+                            <h5 class="fw-bold mb-1">Home & Garden</h5>
+                            <p class="text-muted small mb-0">Everything for your home</p>
+                        </div>
+                        <div class="category-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products mb-6">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h2 class="section-title fw-bold mb-1">Featured Products</h2>
+                <p class="text-muted mb-0">Handpicked items just for you</p>
+            </div>
+            <a href="{% url 'products:product_list' %}" class="btn-minimal-outline">
+                View All <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+        
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for product in featured_products %}
+            <div class="col">
+                <div class="product-card-minimal position-relative">
+                    <!-- Product Image -->
+                    <div class="product-image-wrapper mb-3">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" class="product-img" alt="{{ product.name }}">
+                        {% else %}
+                            <div class="product-img-placeholder">
+                                <i class="fas fa-box-open fa-3x text-muted"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Discount Badge -->
+                        {% if product.discount_price %}
+                        <div class="product-badge-minimal">
+                            <span class="badge-text">-{{ product.discount_percentage|default:"25" }}%</span>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Quick Actions -->
+                        <div class="product-actions-minimal">
+                            <a href="{{ product.get_absolute_url }}" class="action-btn" title="Quick View">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if product.available %}
+                            <form action="{% url 'cart:cart_add' product.id %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="action-btn" title="Add to Cart">
+                                    <i class="fas fa-cart-plus"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Product Details -->
+                    <div class="product-details">
+                        <div class="product-category mb-2">
+                            <span class="category-tag">{{ product.category.name }}</span>
+                        </div>
+                        <h5 class="product-title fw-bold mb-2">{{ product.name|truncatechars:40 }}</h5>
+                        <p class="product-description text-muted small mb-3">{{ product.description|truncatewords:10 }}</p>
+                        
+                        <!-- Rating -->
+                        <div class="rating-minimal mb-3">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <small class="text-muted ms-2">(4.5)</small>
+                        </div>
+                        
+                        <!-- Price and Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="price fw-bold">${{ product.price }}</span>
+                                {% if product.discount_price %}
+                                <span class="price-discounted text-muted ms-2">${{ product.discount_price }}</span>
+                                {% endif %}
+                            </div>
+                            <a href="{{ product.get_absolute_url }}" class="btn-minimal-sm">
+                                Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state-minimal text-center py-5">
+                    <div class="empty-icon mb-3">
+                        <i class="fas fa-box-open fa-3x text-muted"></i>
+                    </div>
+                    <h4 class="fw-bold mb-2">No Featured Products Available</h4>
+                    <p class="text-muted mb-4">We're preparing amazing products for you. Check back soon!</p>
+                    <a href="{% url 'products:product_list' %}" class="btn-minimal-primary">
+                        Browse All Products
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Minimal Banner -->
+<section class="minimal-banner-section mb-6">
+    <div class="container">
+        <div class="banner-minimal p-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h2 class="display-5 fw-bold mb-3">Super Cozy!</h2>
+                    <p class="lead mb-4">Minimalistic design for maximum comfort. Enjoy up to 50% off on selected items.</p>
+                    <a href="{% url 'products:product_list' %}?sale=true" class="btn-minimal-dark">
+                        Buy Now <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+                <div class="col-lg-4 text-end d-none d-lg-block">
+                    <div class="banner-decoration">
+                        <div class="decoration-circle"></div>
+                        <div class="decoration-circle"></div>
+                        <div class="decoration-circle"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Minimal Features -->
+<section class="features-minimal mb-6">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title fw-bold mb-3">Why Choose Us</h2>
+            <p class="text-muted">Minimal effort, maximum satisfaction</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item-minimal">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-shipping-fast"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3 mb-2">Fast Delivery</h5>
+                    <p class="text-muted small">Same-day shipping on orders</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item-minimal">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3 mb-2">Secure Payment</h5>
+                    <p class="text-muted small">100% secure with SSL</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item-minimal">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3 mb-2">24/7 Support</h5>
+                    <p class="text-muted small">Always here to help</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="feature-item-minimal">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-undo"></i>
+                    </div>
+                    <h5 class="fw-bold mt-3 mb-2">Easy Returns</h5>
+                    <p class="text-muted small">30-day return policy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Minimal Design Variables */
+    :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #95a5a6;
+        --accent-color: #3498db;
+        --light-gray: #f8f9fa;
+        --border-color: #e0e0e0;
+    }
+
+    /* Hero Section Styles */
+    .hero-section {
+        background: var(--light-gray);
+    }
+
+    .hero-background {
+        height: 400px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .minimal-badge {
+        background: var(--accent-color);
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+        border-radius: 20px;
+        display: inline-block;
+    }
+
+    .text-gradient {
+        background: linear-gradient(45deg, var(--accent-color), #2ecc71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Minimal Buttons */
+    .btn-minimal-primary {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 2px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-minimal-primary:hover {
+        background: #1a252f;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .btn-minimal-primary .btn-text {
+        margin-right: 8px;
+    }
+
+    .btn-minimal-primary .btn-number {
+        background: white;
+        color: var(--primary-color);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+
+    .btn-minimal-outline {
+        background: transparent;
+        color: var(--primary-color);
+        border: 1px solid var(--primary-color);
+        padding: 10px 25px;
+        border-radius: 2px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-minimal-outline:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-minimal-sm {
+        background: transparent;
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+        padding: 5px 15px;
+        border-radius: 2px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-minimal-sm:hover {
+        background: var(--accent-color);
+        color: white;
+    }
+
+    .btn-minimal-dark {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 2px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .btn-minimal-dark:hover {
+        background: #1a252f;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Category Navigation */
+    .category-nav {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 1rem;
+    }
+
+    .category-nav-link {
+        color: var(--secondary-color);
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .category-nav-link:hover,
+    .category-nav-link.active {
+        color: var(--primary-color);
+        background: var(--light-gray);
+    }
+
+    .nav-icon {
+        font-size: 1.2rem;
+        margin-bottom: 4px;
+    }
+
+    .nav-text {
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+
+    /* Category Cards */
+    .category-card-minimal {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .category-card-minimal:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .category-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .bg-primary-soft {
+        background: rgba(52, 152, 219, 0.1);
+        color: var(--accent-color);
+    }
+
+    .bg-success-soft {
+        background: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+
+    .bg-warning-soft {
+        background: rgba(241, 196, 15, 0.1);
+        color: #f1c40f;
+    }
+
+    .category-content {
+        flex-grow: 1;
+    }
+
+    .category-arrow {
+        color: var(--secondary-color);
+        transition: transform 0.3s ease;
+    }
+
+    .category-card-minimal:hover .category-arrow {
+        transform: translateX(5px);
+        color: var(--accent-color);
+    }
+
+    /* Product Cards */
+    .product-card-minimal {
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 2px;
+        padding: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .product-card-minimal:hover {
+        border-color: var(--accent-color);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .product-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 2px;
+    }
+
+    .product-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .product-card-minimal:hover .product-img {
+        transform: scale(1.05);
+    }
+
+    .product-img-placeholder {
+        width: 100%;
+        height: 200px;
+        background: var(--light-gray);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-badge-minimal {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #e74c3c;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 2px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .product-actions-minimal {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+        display: flex;
+        gap: 5px;
+    }
+
+    .product-card-minimal:hover .product-actions-minimal {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .action-btn {
+        width: 35px;
+        height: 35px;
+        background: white;
+        border: 1px solid var(--border-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+    }
+
+    .product-title {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .category-tag {
+        background: var(--light-gray);
+        color: var(--secondary-color);
+        padding: 3px 8px;
+        border-radius: 2px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .rating-minimal .stars {
+        color: #f1c40f;
+        font-size: 0.875rem;
+    }
+
+    .price {
+        color: var(--primary-color);
+        font-size: 1.25rem;
+    }
+
+    .price-discounted {
+        text-decoration: line-through;
+        font-size: 0.875rem;
+    }
+
+    /* Banner */
+    .banner-minimal {
+        background: var(--light-gray);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .banner-minimal:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 200px;
+        background: var(--accent-color);
+        opacity: 0.1;
+        border-radius: 50%;
+        transform: translate(100px, -100px);
+    }
+
+    .banner-decoration {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .decoration-circle {
+        width: 50px;
+        height: 50px;
+        background: var(--accent-color);
+        opacity: 0.1;
+        border-radius: 50%;
+    }
+
+    .decoration-circle:nth-child(2) {
+        width: 40px;
+        height: 40px;
+        margin-top: 20px;
+    }
+
+    .decoration-circle:nth-child(3) {
+        width: 30px;
+        height: 30px;
+        margin-top: 40px;
+    }
+
+    /* Features */
+    .feature-item-minimal {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .feature-icon-wrapper {
+        width: 70px;
+        height: 70px;
+        background: var(--light-gray);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        font-size: 1.5rem;
+        color: var(--accent-color);
+        transition: all 0.3s ease;
+    }
+
+    .feature-item-minimal:hover .feature-icon-wrapper {
+        background: var(--accent-color);
+        color: white;
+        transform: rotateY(180deg);
+    }
+
+    /* Section Titles */
+    .section-title {
+        font-size: 2rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .stats-minimal {
+        border-top: 1px solid var(--border-color);
+        margin-top: 3rem;
+    }
+
+    .stat-item {
+        padding: 0 20px;
+    }
+
+    .empty-state-minimal {
+        background: var(--light-gray);
+        border-radius: 2px;
+        padding: 40px 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-content {
+            padding: 3rem 1rem;
+        }
+        
+        .category-nav .row {
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .category-nav .col-auto {
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
+    // Simple hover effect for category navigation
+    document.querySelectorAll('.category-nav-link').forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('.nav-icon');
+            icon.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                icon.style.transform = 'scale(1)';
+            }, 300);
+        });
+    });
+
+    // Parallax effect for hero section
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const heroBg = document.querySelector('.hero-background');
+        if (heroBg) {
+            heroBg.style.transform = `translateY(${scrolled * 0.2}px)`;
+        }
+    });
+
+    // Add animation to stats
+    function animateCounter(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            element.textContent = Math.floor(progress * (end - start) + start) + '+';
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    // Animate stats when in viewport
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statElements = entry.target.querySelectorAll('.stat-item h3');
+                statElements.forEach((stat, index) => {
+                    const value = parseInt(stat.textContent);
+                    animateCounter(stat, 0, value, 2000);
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    });
+
+    const statsSection = document.querySelector('.stats-minimal');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+</script>
+{% endblock %}

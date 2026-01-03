@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - E-Store{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Checkout</h1>
+    
+    <div class="row">
+        <!-- Order Summary -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-end">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if item.product.image %}
+                                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" 
+                                                     class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            {% endif %}
+                                            <div>
+                                                <small class="d-block">{{ item.product.name }}</small>
+                                                <small class="text-muted">Qty: {{ item.quantity }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">${{ item.total_price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1">Subtotal</p>
+                            <p class="mb-1">Shipping</p>
+                            <p class="mb-1">Tax (8%)</p>
+                            <p class="mb-0 fw-bold">Total</p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="mb-1">${{ subtotal }}</p>
+                            <p class="mb-1">${{ shipping_cost }}</p>
+                            <p class="mb-1">${{ tax|floatformat:2 }}</p>
+                            <p class="mb-0 fw-bold">${{ total|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Shipping Method</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input shipping-method" type="radio" name="shipping_method" 
+                               id="standard" value="standard" checked>
+                        <label class="form-check-label" for="standard">
+                            Standard Shipping
+                            <small class="d-block text-muted">5-7 business days - $5.99</small>
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input shipping-method" type="radio" name="shipping_method" 
+                               id="express" value="express">
+                        <label class="form-check-label" for="express">
+                            Express Shipping
+                            <small class="d-block text-muted">2-3 business days - $15.99</small>
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input shipping-method" type="radio" name="shipping_method" 
+                               id="overnight" value="overnight">
+                        <label class="form-check-label" for="overnight">
+                            Overnight Shipping
+                            <small class="d-block text-muted">Next business day - $29.99</small>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <form method="post" id="checkoutForm">
+                {% csrf_token %}
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger small">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.last_name.label_tag }}
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger small">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.phone.label_tag }}
+                                {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger small">{{ form.phone.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            {{ form.address.label_tag }}
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                                <div class="text-danger small">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.city.label_tag }}
+                                {{ form.city }}
+                                {% if form.city.errors %}
+                                    <div class="text-danger small">{{ form.city.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.state.label_tag }}
+                                {{ form.state }}
+                                {% if form.state.errors %}
+                                    <div class="text-danger small">{{ form.state.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.postal_code.label_tag }}
+                                {{ form.postal_code }}
+                                {% if form.postal_code.errors %}
+                                    <div class="text-danger small">{{ form.postal_code.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form.country.label_tag }}
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <div class="text-danger small">{{ form.country.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Method</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.payment_method.label_tag }}
+                                {{ form.payment_method }}
+                                {% if form.payment_method.errors %}
+                                    <div class="text-danger small">{{ form.payment_method.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Payment method details will be shown based on selection -->
+                        <div id="creditCardDetails" class="payment-details" style="display: none;">
+                            <div class="card border-info">
+                                <div class="card-body">
+                                    <h6 class="card-title">Credit Card Information</h6>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="cardNumber" class="form-label">Card Number</label>
+                                            <input type="text" class="form-control" id="cardNumber" 
+                                                   placeholder="1234 5678 9012 3456" maxlength="19">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="expiryDate" class="form-label">Expiry Date</label>
+                                            <input type="text" class="form-control" id="expiryDate" 
+                                                   placeholder="MM/YY" maxlength="5">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="cvv" class="form-label">CVV</label>
+                                            <input type="text" class="form-control" id="cvv" 
+                                                   placeholder="123" maxlength="3">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="paypalDetails" class="payment-details" style="display: none;">
+                            <div class="card border-warning">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fab fa-paypal me-2"></i>PayPal</h6>
+                                    <p class="small text-muted">You will be redirected to PayPal to complete your payment.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="codDetails" class="payment-details" style="display: none;">
+                            <div class="card border-success">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-money-bill-wave me-2"></i>Cash on Delivery</h6>
+                                    <p class="small text-muted">Pay with cash when your order is delivered.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="bankDetails" class="payment-details" style="display: none;">
+                            <div class="card border-primary">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-university me-2"></i>Bank Transfer</h6>
+                                    <p class="small text-muted">Bank details will be provided after order confirmation.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0"><i class="fas fa-sticky-note me-2"></i>Order Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ form.notes.label_tag }}
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger small">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Cart
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-lock me-2"></i>Place Order & Pay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Show/hide payment method details
+    const paymentMethod = document.getElementById('id_payment_method');
+    const paymentDetails = document.querySelectorAll('.payment-details');
+    
+    function showPaymentDetails() {
+        // Hide all payment details first
+        paymentDetails.forEach(detail => {
+            detail.style.display = 'none';
+        });
+        
+        // Show selected payment method details
+        const selectedMethod = paymentMethod.value;
+        if (selectedMethod === 'credit_card') {
+            document.getElementById('creditCardDetails').style.display = 'block';
+        } else if (selectedMethod === 'paypal') {
+            document.getElementById('paypalDetails').style.display = 'block';
+        } else if (selectedMethod === 'cash_on_delivery') {
+            document.getElementById('codDetails').style.display = 'block';
+        } else if (selectedMethod === 'bank_transfer') {
+            document.getElementById('bankDetails').style.display = 'block';
+        }
+    }
+    
+    // Initial call
+    showPaymentDetails();
+    
+    // Add event listener
+    paymentMethod.addEventListener('change', showPaymentDetails);
+    
+    // Card number formatting
+    const cardNumber = document.getElementById('cardNumber');
+    if (cardNumber) {
+        cardNumber.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+            e.target.value = formatted;
+        });
+    }
+    
+    // Expiry date formatting
+    const expiryDate = document.getElementById('expiryDate');
+    if (expiryDate) {
+        expiryDate.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^0-9]/g, '');
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    }
+    
+    // CVV formatting (numbers only)
+    const cvv = document.getElementById('cvv');
+    if (cvv) {
+        cvv.addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    }
+</script>
+
+<style>
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    
+    .card {
+        border: none;
+    }
+    
+    .card-header {
+        border-bottom: 1px solid rgba(0,0,0,.125);
+    }
+    
+    .payment-details {
+        margin-top: 1rem;
+    }
+    
+    .shipping-method:checked + label {
+        font-weight: bold;
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}

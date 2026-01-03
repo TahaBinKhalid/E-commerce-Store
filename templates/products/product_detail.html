@@ -1,0 +1,438 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - E-Store{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'products:product_list' %}">Products</a></li>
+            <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name|truncatewords:3 }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row g-4">
+        <!-- Product Images -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="product-main-image text-center p-4">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                                 class="img-fluid rounded" style="max-height: 400px; object-fit: contain;">
+                        {% else %}
+                            <div class="bg-light d-flex align-items-center justify-content-center rounded" 
+                                 style="height: 400px;">
+                                <i class="fas fa-box-open fa-5x text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="product-thumbnails d-flex justify-content-center p-3 border-top">
+                        <div class="row g-2 w-100">
+                            {% for i in "1234" %}
+                            <div class="col-3">
+                                <div class="thumbnail border rounded p-2 text-center" style="cursor: pointer;">
+                                    {% if product.image %}
+                                        <img src="{{ product.image.url }}" alt="Thumbnail {{ i }}" 
+                                             class="img-fluid" style="height: 60px; object-fit: contain;">
+                                    {% else %}
+                                        <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Info -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Product Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><strong>Category:</strong> {{ product.category.name }}</li>
+                        <li class="mb-2"><strong>Availability:</strong> 
+                            <span class="badge bg-{% if product.available %}success{% else %}danger{% endif %}">
+                                {% if product.available %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </li>
+                        <li class="mb-2"><strong>Added:</strong> {{ product.created|date:"F d, Y" }}</li>
+                        {% if product.updated != product.created %}
+                            <li class="mb-2"><strong>Updated:</strong> {{ product.updated|date:"F d, Y" }}</li>
+                        {% endif %}
+                        <li class="mb-2"><strong>Product ID:</strong> {{ product.id }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h1 class="h2 mb-1">{{ product.name }}</h1>
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="rating me-2">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                </div>
+                                <small class="text-muted">(42 reviews) | </small>
+                                <a href="#reviews" class="text-decoration-none ms-1">Write a review</a>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="badge bg-info">Bestseller</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center">
+                            <h2 class="text-primary fw-bold me-3">${{ product.price }}</h2>
+                            {% if product.price > 100 %}
+                                <del class="text-muted me-3">${{ product.price|add:"50" }}</del>
+                                <span class="badge bg-danger">Save $50</span>
+                            {% endif %}
+                        </div>
+                        <div class="mt-2">
+                            <i class="fas fa-shipping-fast text-success me-1"></i>
+                            <small class="text-muted">Free shipping on orders over $50</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="mb-2">Description</h5>
+                        <p class="text-muted">{{ product.description|linebreaks }}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h5 class="mb-3">Key Features</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> High-quality materials</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 1-year warranty included</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Free returns within 30 days</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i> 24/7 customer support</li>
+                        </ul>
+                    </div>
+                    
+                    {% if product.available %}
+                    <div class="card bg-light border-0 mb-4">
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="quantity" class="form-label">Quantity</label>
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-secondary" type="button" id="decreaseQty">-</button>
+                                        <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="10">
+                                        <button class="btn btn-outline-secondary" type="button" id="increaseQty">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Delivery</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="delivery" id="standard" checked>
+                                        <label class="form-check-label" for="standard">
+                                            Standard (3-5 days)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="delivery" id="express">
+                                        <label class="form-check-label" for="express">
+                                            Express (1-2 days) +$10
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex">
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="flex-grow-1">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1" id="hiddenQuantity">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                            </button>
+                        </form>
+                        <button class="btn btn-outline-danger btn-lg">
+                            <i class="fas fa-heart me-2"></i> Wishlist
+                        </button>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        This product is currently out of stock. Please check back later.
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <div class="d-flex">
+                            <div class="me-4 text-center">
+                                <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                                <p class="small mb-0">Secure Payment</p>
+                            </div>
+                            <div class="me-4 text-center">
+                                <i class="fas fa-undo fa-2x text-success mb-2"></i>
+                                <p class="small mb-0">30-Day Returns</p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-headset fa-2x text-success mb-2"></i>
+                                <p class="small mb-0">24/7 Support</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Related Products -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="fas fa-random me-2"></i>Related Products</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for related_product in product.category.products.all|slice:":3" %}
+                            {% if related_product.id != product.id %}
+                            <div class="col-md-4">
+                                <div class="card border-0 h-100">
+                                    <a href="{{ related_product.get_absolute_url }}" class="text-decoration-none">
+                                        <div class="text-center p-2">
+                                            {% if related_product.image %}
+                                                <img src="{{ related_product.image.url }}" alt="{{ related_product.name }}" 
+                                                     class="img-fluid" style="height: 80px; object-fit: contain;">
+                                            {% else %}
+                                                <i class="fas fa-box-open fa-2x text-muted"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div class="card-body p-2">
+                                            <h6 class="card-title text-dark small">{{ related_product.name|truncatewords:3 }}</h6>
+                                            <p class="card-text text-primary fw-bold mb-0">${{ related_product.price }}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="col-12 text-center py-3">
+                                <p class="text-muted mb-0">No related products found.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Tabs -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <ul class="nav nav-tabs" id="productTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="description-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#description" type="button" role="tab">
+                                <i class="fas fa-file-alt me-2"></i>Description
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="specs-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#specs" type="button" role="tab">
+                                <i class="fas fa-list-alt me-2"></i>Specifications
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#reviews" type="button" role="tab">
+                                <i class="fas fa-star me-2"></i>Reviews (42)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="faq-tab" data-bs-toggle="tab" 
+                                    data-bs-target="#faq" type="button" role="tab">
+                                <i class="fas fa-question-circle me-2"></i>FAQ
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-4" id="productTabContent">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel">
+                            <h5>Detailed Description</h5>
+                            <p>{{ product.description|linebreaks }}</p>
+                            <p class="text-muted">Experience the best quality with our premium products. Designed with attention to detail and built to last.</p>
+                        </div>
+                        <div class="tab-pane fade" id="specs" role="tabpanel">
+                            <h5>Product Specifications</h5>
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <td>E-Store Brand</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Model</th>
+                                        <td>{{ product.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Category</th>
+                                        <td>{{ product.category.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Warranty</th>
+                                        <td>1 Year</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Shipping Weight</th>
+                                        <td>1.5 kg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                            <h5>Customer Reviews</h5>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="text-center p-3 bg-light rounded">
+                                        <h2 class="text-primary">4.5</h2>
+                                        <div class="rating mb-2">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star-half-alt text-warning"></i>
+                                        </div>
+                                        <p class="small text-muted">Based on 42 reviews</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <h6>Write a Review</h6>
+                                        <textarea class="form-control" rows="3" placeholder="Share your experience..."></textarea>
+                                        <button class="btn btn-primary mt-2">Submit Review</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="faq" role="tabpanel">
+                            <h5>Frequently Asked Questions</h5>
+                            <div class="accordion" id="faqAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                            What is the return policy?
+                                        </button>
+                                    </h2>
+                                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            You can return this product within 30 days of delivery for a full refund.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                            How long does shipping take?
+                                        </button>
+                                    </h2>
+                                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                        <div class="accordion-body">
+                                            Standard shipping takes 3-5 business days. Express shipping is available for faster delivery.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Quantity controls
+    const quantityInput = document.getElementById('quantity');
+    const hiddenQuantity = document.getElementById('hiddenQuantity');
+    const decreaseBtn = document.getElementById('decreaseQty');
+    const increaseBtn = document.getElementById('increaseQty');
+    
+    decreaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            hiddenQuantity.value = quantityInput.value;
+        }
+    });
+    
+    increaseBtn.addEventListener('click', function() {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue < 10) {
+            quantityInput.value = currentValue + 1;
+            hiddenQuantity.value = quantityInput.value;
+        }
+    });
+    
+    quantityInput.addEventListener('change', function() {
+        let value = parseInt(this.value);
+        if (value < 1) this.value = 1;
+        if (value > 10) this.value = 10;
+        hiddenQuantity.value = this.value;
+    });
+    
+    // Update hidden quantity when form is submitted
+    document.querySelector('form').addEventListener('submit', function() {
+        hiddenQuantity.value = quantityInput.value;
+    });
+    
+    // Thumbnail click simulation
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+            const mainImage = document.querySelector('.product-main-image img');
+            const thumbImage = this.querySelector('img');
+            if (thumbImage && mainImage) {
+                mainImage.src = thumbImage.src;
+            }
+        });
+    });
+</script>
+
+<style>
+    .product-main-image {
+        background-color: #f8f9fa;
+    }
+    
+    .thumbnail:hover {
+        border-color: #0d6efd !important;
+    }
+    
+    .rating {
+        color: #ffc107;
+    }
+    
+    .nav-tabs .nav-link {
+        border: none;
+        padding: 1rem 1.5rem;
+        color: #6c757d;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #0d6efd;
+        border-bottom: 3px solid #0d6efd;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: #e7f1ff;
+        color: #0d6efd;
+    }
+</style>
+{% endblock %}
