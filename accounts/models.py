@@ -15,16 +15,13 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} Profile'
 
-# Signal handler to create profile when user is created
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        # Use get_or_create to avoid duplicates
         Profile.objects.get_or_create(user=instance)
 
-# Signal handler to save profile when user is saved
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    # Check if profile exists before saving
+
     if hasattr(instance, 'profile'):
         instance.profile.save()

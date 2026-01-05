@@ -8,7 +8,6 @@
     <h1 class="mb-4">Checkout</h1>
     
     <div class="row">
-        <!-- Order Summary -->
         <div class="col-lg-4 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
@@ -207,7 +206,7 @@
                             </div>
                         </div>
                         
-                        <!-- Payment method details will be shown based on selection -->
+                        <!-- Payment method details -->
                         <div id="creditCardDetails" class="payment-details" style="display: none;">
                             <div class="card border-info">
                                 <div class="card-body">
@@ -289,17 +288,14 @@
 </div>
 
 <script>
-    // Show/hide payment method details
     const paymentMethod = document.getElementById('id_payment_method');
     const paymentDetails = document.querySelectorAll('.payment-details');
     
     function showPaymentDetails() {
-        // Hide all payment details first
         paymentDetails.forEach(detail => {
             detail.style.display = 'none';
         });
         
-        // Show selected payment method details
         const selectedMethod = paymentMethod.value;
         if (selectedMethod === 'credit_card') {
             document.getElementById('creditCardDetails').style.display = 'block';
@@ -312,13 +308,10 @@
         }
     }
     
-    // Initial call
     showPaymentDetails();
     
-    // Add event listener
     paymentMethod.addEventListener('change', showPaymentDetails);
     
-    // Card number formatting
     const cardNumber = document.getElementById('cardNumber');
     if (cardNumber) {
         cardNumber.addEventListener('input', function(e) {
@@ -328,7 +321,6 @@
         });
     }
     
-    // Expiry date formatting
     const expiryDate = document.getElementById('expiryDate');
     if (expiryDate) {
         expiryDate.addEventListener('input', function(e) {
@@ -339,8 +331,6 @@
             e.target.value = value;
         });
     }
-    
-    // CVV formatting (numbers only)
     const cvv = document.getElementById('cvv');
     if (cvv) {
         cvv.addEventListener('input', function(e) {

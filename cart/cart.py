@@ -40,17 +40,16 @@ class Cart:
     def __iter__(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()  # Make a copy of the cart
+        cart = self.cart.copy()  
         
         for product in products:
             cart[str(product.id)]['product'] = product
         
         for item in cart.values():
-            # Create a new item dictionary instead of modifying the original
             yield {
                 'product': item.get('product'),
                 'quantity': item['quantity'],
-                'price': Decimal(item['price']),  # Convert to Decimal in the yielded item
+                'price': Decimal(item['price']),  
                 'total_price': Decimal(item['price']) * item['quantity']
             }
     

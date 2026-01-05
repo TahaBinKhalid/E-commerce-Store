@@ -6,11 +6,9 @@ class Command(BaseCommand):
     help = 'Seeds the database with sample products'
 
     def handle(self, *args, **kwargs):
-        # Clear existing data
         Product.objects.all().delete()
         Category.objects.all().delete()
         
-        # Create categories
         categories_data = [
             {'name': 'Electronics', 'slug': 'electronics'},
             {'name': 'Clothing', 'slug': 'clothing'},
@@ -26,7 +24,6 @@ class Command(BaseCommand):
             categories[cat_data['slug']] = category
             self.stdout.write(self.style.SUCCESS(f'Created category: {category.name}'))
         
-        # Create sample products
         products_data = [
             {
                 'name': 'iPhone 14 Pro',

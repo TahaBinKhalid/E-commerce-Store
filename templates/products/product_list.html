@@ -8,7 +8,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <!-- Categories Sidebar -->
+        <!-- Sidebar Categories -->
         <div class="col-lg-3 col-md-4">
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-primary text-white">
@@ -23,7 +23,6 @@
                             <span class="badge bg-primary rounded-pill">{{ total_products }}</span>
                         </a>
                         {% for cat in categories %}
-                            <!-- FIXED: Use the correct URL pattern with only slug -->
                             <a href="{% url 'products:product_list_by_category' cat.slug %}" 
                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if category.slug == cat.slug %}active{% endif %}">
                                 {{ cat.name }}
@@ -70,7 +69,6 @@
         
         <!-- Products Grid -->
         <div class="col-lg-9 col-md-8">
-            <!-- Breadcrumb -->
             <nav aria-label="breadcrumb" class="mb-4">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
@@ -144,13 +142,12 @@
                         </div>
                         <div class="card-body d-flex flex-column">
                             <div class="mb-2">
-                                <!-- FIXED: Use URL with only slug for category -->
                                 <a href="{% url 'products:product_list_by_category' product.category.slug %}" class="text-decoration-none">
                                     <span class="badge bg-light text-dark">{{ product.category.name }}</span>
                                 </a>
                             </div>
                             <h5 class="card-title">
-                                <!-- FIXED: Use the correct product detail URL -->
+                                <!-- product detail -->
                                 <a href="{% url 'products:product_detail' product.id product.slug %}" class="text-decoration-none text-dark">
                                     {{ product.name }}
                                 </a>
@@ -218,7 +215,7 @@
                 {% endfor %}
             </div>
             
-            <!-- Products List View (Hidden by default) -->
+            <!-- Products List View  -->
             <div class="row d-none" id="productsList">
                 {% for product in products %}
                 <div class="col-12 mb-4">
@@ -298,14 +295,12 @@
                 {% endfor %}
             </div>
             
-            <!-- Pagination - REMOVED since we're not using pagination in this example -->
-            <!-- You can add it back when you implement pagination in your view -->
         </div>
     </div>
 </div>
 
 <script>
-    // Price range filter
+
     const priceRange = document.getElementById('priceRange');
     const priceValue = document.getElementById('priceValue');
     
@@ -313,7 +308,6 @@
         priceValue.textContent = this.value;
     });
     
-    // Grid/List view toggle
     const gridViewBtn = document.getElementById('gridView');
     const listViewBtn = document.getElementById('listView');
     const productsGrid = document.getElementById('productsGrid');
@@ -333,10 +327,9 @@
         listViewBtn.classList.add('active');
     });
     
-    // In stock filter
+    // Stock filter
     const inStockCheck = document.getElementById('inStockCheck');
     inStockCheck.addEventListener('change', function() {
-        // This would typically make an AJAX request to filter products
         alert('Filter functionality would be implemented here with AJAX');
     });
 </script>

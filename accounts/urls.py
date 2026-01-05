@@ -5,14 +5,13 @@ from . import views
 app_name = 'accounts' 
 
 urlpatterns = [
-    # Authentication URLs
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     
-    # # Password reset URLs (optional but recommended)
+    # # Password reset URLs (optional)
     # path('password-reset/', 
     #      auth_views.PasswordResetView.as_view(template_name='accounts/password_reset.html'), 
     #      name='password_reset'),

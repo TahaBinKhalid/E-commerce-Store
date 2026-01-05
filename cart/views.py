@@ -45,14 +45,12 @@ from .cart import Cart
 def cart_detail(request):
     cart = Cart(request)
     
-    # Clean up any invalid products from the cart
     product_ids = list(cart.cart.keys())
     for product_id in product_ids:
         try:
-            # Try to get the product
             product = Product.objects.get(id=int(product_id))
         except (Product.DoesNotExist, ValueError):
-            # If product doesn't exist or ID is invalid, remove it from cart
+            
             del cart.cart[product_id]
             cart.save()
     

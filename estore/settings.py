@@ -24,10 +24,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'crispy_bootstrap5',
-    'products',      # This automatically uses ProductsConfig
-    'cart',          # This automatically uses CartConfig
-    'accounts',      # This automatically uses AccountsConfig
-    'orders',        # This automatically uses OrdersConfig
+    'products',     
+    'cart',         
+    'accounts',      
+    'orders',        
     'django_extensions',
 ]
 

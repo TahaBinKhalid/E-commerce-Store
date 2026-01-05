@@ -4,7 +4,7 @@
 {% block title %}Payment - Order #{{ order.id }} - E-Store{% endblock %}
 
 {% block extra_css %}
-<!-- Stripe Elements CSS -->
+<!-- CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 {% endblock %}
 
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                     
-                    <!-- Stripe Payment Form -->
+                    <!-- Payment Form -->
                     <div class="payment-section">
                         <h5 class="mb-3"><i class="fab fa-cc-stripe me-2"></i>Credit Card Payment</h5>
                         
@@ -66,7 +66,7 @@
                                     Credit or debit card
                                 </label>
                                 <div id="card-element" class="form-control p-3" style="height: 45px;">
-                                    <!-- Stripe Card Element will be inserted here -->
+                                
                                 </div>
                                 <div id="card-errors" role="alert" class="text-danger mt-2"></div>
                             </div>
@@ -93,7 +93,6 @@
                         </form>
                     </div>
                     
-                    <!-- Alternative Payment Methods -->
                     <div class="mt-4 pt-4 border-top">
                         <h6 class="mb-3">Other Payment Methods</h6>
                         <div class="row">
@@ -140,14 +139,13 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Stripe.js -->
+
 <script src="https://js.stripe.com/v3/"></script>
 <script>
-    // Stripe setup
+   
     const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
     
-    // Custom styling for Stripe Elements
     const style = {
         base: {
             color: '#32325d',
@@ -164,11 +162,9 @@
         }
     };
     
-    // Create card element
     const card = elements.create('card', {style: style});
     card.mount('#card-element');
     
-    // Handle real-time validation errors from the card Element
     card.addEventListener('change', function(event) {
         const displayError = document.getElementById('card-errors');
         if (event.error) {
@@ -178,18 +174,15 @@
         }
     });
     
-    // Handle form submission
     const form = document.getElementById('payment-form');
     const submitButton = document.getElementById('submit-button');
     
     form.addEventListener('submit', async function(event) {
         event.preventDefault();
         
-        // Disable submit button to prevent multiple clicks
         submitButton.disabled = true;
         submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
         
-        // Create payment method
         const {paymentMethod, error} = await stripe.createPaymentMethod({
             type: 'card',
             card: card,
@@ -199,20 +192,18 @@
         });
         
         if (error) {
-            // Show error to customer
             const errorElement = document.getElementById('card-errors');
             errorElement.textContent = error.message;
             submitButton.disabled = false;
             submitButton.innerHTML = '<i class="fas fa-lock me-2"></i>Pay ${{ order.get_total_cost }}';
         } else {
-            // Submit the form with payment method ID
+         
             const hiddenInput = document.createElement('input');
             hiddenInput.setAttribute('type', 'hidden');
             hiddenInput.setAttribute('name', 'payment_method_id');
             hiddenInput.setAttribute('value', paymentMethod.id);
             form.appendChild(hiddenInput);
             
-            // Submit the form
             form.submit();
         }
     });
